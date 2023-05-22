@@ -2,10 +2,8 @@
 #include <list>
 using namespace std;
 
-// Направленный граф с использованием списка смежности
-// представление
-
-class Graph{
+// Ориентированный граф с использованием матрицы смежности
+struct Graph{
     // Количество вершин в графе
     int V;
     list<int>* adj;
@@ -15,13 +13,12 @@ class Graph{
 
     void countPathsUtil(int, int, bool[], int&);
 
-public:
-
     // Конструктор
     Graph(int V);
 
     void addEdge(int u, int v);
     int countPaths(int s, int d);
+    void printGraph();
 
 };
 
@@ -83,12 +80,26 @@ void Graph::countPathsUtil(int u, int d, bool visited[],int& pathCount){
     visited[u] = false;
 }
 
+void Graph::printGraph(){
+    
+    for (int i = 0; i < V; i++)
+    {
+        // вывести номер текущей вершины
+        cout << i << " ——> ";
+
+        // вывести все соседние вершины вершины `i`
+        for (int v : adj[i]) {
+            cout << v << " ";
+        }
+        cout << endl;
+    }
+}
 // Код драйвера
 
 int main(){
+    setlocale(LC_ALL, "");
     // Создать график, приведенный на диаграмме выше
-
-    Graph g(4);
+    Graph g(5);
 
     g.addEdge(0, 1);
     g.addEdge(0, 2);
@@ -96,8 +107,10 @@ int main(){
     g.addEdge(2, 0);
     g.addEdge(2, 1);
     g.addEdge(1, 3);
-    int s = 2, d = 3;
-
-    cout << g.countPaths(s, d);
-
+    g.addEdge(2, 3);
+    g.addEdge(1, 4);
+    g.addEdge(4, 3);
+    int s = 2, d = 4;
+    g.printGraph();
+    cout <<"Количество путей из  "<<s<<"  в  "<< d <<"  = " << g.countPaths(s, d);
 }
