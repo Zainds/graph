@@ -1,112 +1,103 @@
 ﻿#include <iostream>
-#include <vector>
-
+#include <list>
 using namespace std;
 
-// Структура данных для хранения ребра Graph
-struct Edge {
-    int src, dest;
-    Edge(int _src,int _dest) {
-        src = _src;
-        dest = _dest;
-    }
-};
+// Направленный граф с использованием списка смежности
+// представление
 
-// Класс для представления graphического объекта
-class Graph
-{
+class Graph{
+    // Количество вершин в графе
+    int V;
+    list<int>* adj;
+
+    // рекурсивная функция
+    // используется countPaths ()
+
+    void countPathsUtil(int, int, bool[], int&);
+
 public:
 
-    // вектор векторов для представления матрицы смежности
-    vector<vector<int>> adjList;
+    // Конструктор
+    Graph(int V);
 
-    // Конструктор Graphа
-    Graph(vector<Edge> const& edges, int n)
-    {
-        // изменить размер вектора, чтобы он содержал `n` элементов типа `vector<int>`
-        adjList.resize(n);
+    void addEdge(int u, int v);
+    int countPaths(int s, int d);
 
-        // добавляем ребра в ориентированный graph
-        for (Edge edge : edges) {
-            adjList[edge.src].push_back(edge.dest);
-        }
-    }
 };
 
-// Функция для обхода DFS - Поиск в ширину
-void DFS(Graph const& graph, int v, vector<bool>& visited)
-{
-    // отметить текущий узел как посещенный
-    visited[v] = true;
+Graph::Graph(int V){
 
-    // делаем для каждого ребра (v, u)
-    for (int u : graph.adjList[v])
-    {
-        // `u` не посещается
-        if (!visited[u]) {
-            DFS(graph, u, visited);
-        }
-    }
+    this->V = V;
+    adj = new list<int>[V];
 }
 
-// Функция для проверки, является ли graph сильно связным или нет
-bool isStronglyConnected(Graph const& graph, int n)
-{
-    // делаем для каждой вершины
-    for (int i = 0; i < n; i++)
-    {
-        // чтобы отслеживать, посещена ли вершина или нет
-        vector<bool> visited(n);
-
-        // запускаем DFS с первой вершины
-        DFS(graph, i, visited);
-
-        // Если обход DFS не посещает все вершины,
-        // тогда graph не сильно связан
-        if (find(visited.begin(), visited.end(), false) != visited.end()) {
-            return false;
-        }
-    }
-
-    return true;
+void Graph::addEdge(int u, int v){
+    // Добавить v в список u.
+    adj[u].push_back(v);
 }
 
-void printGraph(Graph const& graph, int n)
-{
-    for (int i = 0; i < n; i++)
-    {
-        // вывести номер текущей вершины
-        cout << i << " ——> ";
+// Возвращает количество путей от 's' до 'd'
+int Graph::countPaths(int s, int d){
+    // Отметим все вершины
+    // как не посещенный
 
-        // вывести все соседние вершины вершины `i`
-        for (int v : graph.adjList[i]) {
-            cout << v << " ";
-        }
-        cout << endl;
-    }
+    bool* visited = new bool[V];
+
+    memset(visited, false, sizeof(visited));
+
+    // Вызов рекурсивного помощника
+
+    // функция для печати всех путей
+
+    int pathCount = 0;
+
+    countPathsUtil(s, d, visited, pathCount);
+
+    return pathCount;
 }
 
-int main()
-{   
-    setlocale(LC_ALL, "");
-    // vector ребер Graph согласно схеме выше
-    vector<Edge> edges = {
-        {0, 4}, {1, 0}, {1, 2}, {2, 1}, {2, 4},
-        {3, 1}, {3, 2}, {4, 3}
-    };
-    // общее количество узлов в Graph
-    int n = 5;
-    
-    // строим graph из заданных ребер
-    Graph graph(edges, n);
+// Рекурсивная функция для печати всех путей
+// от 'u' до 'd'. посетил [] отслеживает
+// вершины в текущем пути. путь [] магазины
+// фактические вершины и path_index
+// текущий индекс в пути []
 
-    printGraph(graph, n);
-    // проверяем, не является ли graph сильно связным или нет
-    if (isStronglyConnected(graph, n)) {
-        cout << "The graph is strongly connected\n";
+void Graph::countPathsUtil(int u, int d, bool visited[],int& pathCount){
+
+    visited[u] = true;
+    // Если текущая вершина совпадает с пунктом назначения,
+    // затем увеличиваем количество
+    if (u == d) pathCount++;
+
+    // Если текущая вершина не является пунктом назначения
+    else{
+        // Повторение для всех вершин, смежных с
+        // текущая вершина
+
+        list<int>::iterator i;
+
+        for (i = adj[u].begin(); i != adj[u].end(); ++i) {
+            if (!visited[*i])countPathsUtil(*i, d, visited, pathCount);
+        }
     }
-    else {
-        cout << "The graph is not strongly connected\n";
-    }
+    visited[u] = false;
+}
+
+// Код драйвера
+
+int main(){
+    // Создать график, приведенный на диаграмме выше
+
+    Graph g(4);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(0, 3);
+    g.addEdge(2, 0);
+    g.addEdge(2, 1);
+    g.addEdge(1, 3);
+    int s = 2, d = 3;
+
+    cout << g.countPaths(s, d);
 
 }
