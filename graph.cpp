@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <list>
+#include <vector>
 using namespace std;
 
 // Ориентированный граф с использованием матрицы смежности
@@ -19,6 +20,8 @@ struct Graph{
     void addEdge(int u, int v);
     int countPaths(int s, int d);
     void printGraph();
+    void printMatrix();
+    
 
 };
 
@@ -94,6 +97,40 @@ void Graph::printGraph(){
         cout << endl;
     }
 }
+bool search(vector<int> a, int k) {
+    bool flag = false;
+    for (int x : a) {
+        if (x == k) flag = true;
+    }
+    return flag;
+
+}
+void Graph::printMatrix() {
+    cout << "\n      ";
+    for (int i = 0; i < V; i++) cout << i <<" ";
+    cout << endl;
+    for (int i = 0; i < V; i++)
+    {   
+        vector<int>paths;
+        for (int v : adj[i]) {
+            paths.push_back(v);
+        }
+        // вывести номер текущей вершины
+        cout << i << " :   ";
+        for (int j = 0; j < V; j++) {
+            if (search(paths, j)) {
+                cout << 1 << " ";
+            }
+            else {
+                cout << 0 << " ";
+            }
+        }
+        // вывести все соседние вершины вершины `i`
+        
+        cout << endl;
+    }
+}
+
 // Код драйвера
 
 int main(){
@@ -111,6 +148,7 @@ int main(){
     g.addEdge(1, 4);
     g.addEdge(4, 3);
     int s = 2, d = 4;
-    g.printGraph();
-    cout <<"Количество путей из  "<<s<<"  в  "<< d <<"  = " << g.countPaths(s, d);
+    //g.printGraph();
+    g.printMatrix();
+    cout <<"\nКоличество путей из  "<<s<<"  в  "<< d <<"  = " << g.countPaths(s, d);
 }
