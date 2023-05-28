@@ -7,22 +7,19 @@ using namespace std;
 struct Graph{
     // Количество вершин в графе
     int V;
+    // Матрица смежности
     vector<int>* adj;
 
     // рекурсивная функция
     // используется countPaths ()
-
     void countPathsUtil(int, int, bool[], int&);
 
     // Конструктор
     Graph(int V);
-
     void addEdge(int u, int v);
     int countPaths(int s, int d);
     void printGraph();
     void printMatrix();
-    
-
 };
 
 Graph::Graph(int V){
@@ -31,6 +28,7 @@ Graph::Graph(int V){
     adj = new vector<int>[V];
 }
 
+// Добавить элемент в граф
 void Graph::addEdge(int u, int v){
     // Добавить v в список u.
     adj[u].push_back(v);
@@ -97,6 +95,7 @@ void Graph::printGraph(){
         cout << endl;
     }
 }
+
 bool search(vector<int> a, int k) {
     bool flag = false;
     for (int x : a) {
@@ -105,6 +104,8 @@ bool search(vector<int> a, int k) {
     return flag;
 
 }
+
+// Вывод матрицы смежности
 void Graph::printMatrix() {
     cout << "\n      ";
     for (int i = 0; i < V; i++) cout << i <<" ";
@@ -148,7 +149,7 @@ int main(){
     g.addEdge(1, 4);
     g.addEdge(4, 3);
     int s = 2, d = 4;
-    g.printGraph();
+    //g.printGraph();
     g.printMatrix();
     cout <<"\nКоличество путей из  "<<s<<"  в  "<< d <<"  = " << g.countPaths(s, d);
 }
