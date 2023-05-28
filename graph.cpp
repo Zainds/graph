@@ -7,7 +7,7 @@ using namespace std;
 struct Graph{
     // Количество вершин в графе
     int V;
-    list<int>* adj;
+    vector<int>* adj;
 
     // рекурсивная функция
     // используется countPaths ()
@@ -28,7 +28,7 @@ struct Graph{
 Graph::Graph(int V){
 
     this->V = V;
-    adj = new list<int>[V];
+    adj = new vector<int>[V];
 }
 
 void Graph::addEdge(int u, int v){
@@ -74,7 +74,7 @@ void Graph::countPathsUtil(int u, int d, bool visited[],int& pathCount){
         // Повторение для всех вершин, смежных с
         // текущая вершина
 
-        list<int>::iterator i;
+        vector<int>::iterator i;
 
         for (i = adj[u].begin(); i != adj[u].end(); ++i) {
             if (!visited[*i])countPathsUtil(*i, d, visited, pathCount);
@@ -148,7 +148,7 @@ int main(){
     g.addEdge(1, 4);
     g.addEdge(4, 3);
     int s = 2, d = 4;
-    //g.printGraph();
+    g.printGraph();
     g.printMatrix();
     cout <<"\nКоличество путей из  "<<s<<"  в  "<< d <<"  = " << g.countPaths(s, d);
 }
